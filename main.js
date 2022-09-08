@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', ()=> {
     const cardsProfesores = document.querySelector('#cardsProfesores');
     const templateEstudiante = document.querySelector('#templateEstudiante').content;
     const templateProfesor = document.querySelector('#templateProfesor').content;
+    const alert = document.querySelector('.alert');
 
 
     const estudiantes = [];
@@ -13,11 +14,11 @@ document.addEventListener('DOMContentLoaded', ()=> {
 
     document.addEventListener('click', e => {
 
-        if(e.target.dataset.email) {
+        if(e.target.dataset.uid) {
 
             if(e.target.matches('.btn-success')) {
                 estudiantes.map(item => {
-                    if(item.email === e.target.dataset.email) {
+                    if(item.uid === e.target.dataset.uid) {
                         item.setEstado = true;
                     }
 
@@ -27,7 +28,7 @@ document.addEventListener('DOMContentLoaded', ()=> {
 
             if(e.target.matches('.btn-danger')) {
                 estudiantes.map(item => {
-                    if(item.email === e.target.dataset.email) {
+                    if(item.uid === e.target.dataset.uid) {
                         item.setEstado = false;
                     }
 
@@ -42,9 +43,17 @@ document.addEventListener('DOMContentLoaded', ()=> {
     formulario.addEventListener('submit', e => {
         e.preventDefault();
 
+        alert.classList.add('d-none');
+
         const datos = new FormData(formulario);
         
         const [nombre, edad, email, opcion] = [...datos.values()];
+
+        if(!nombre.trim() || !edad.trim() || !email.trim() || !opcion.trim()) {
+            console.log('algun dato en blanco');
+            alert.classList.remove('d-none');
+            return;
+        }
         
         if(opcion === 'Estudiante') {
             const estudiante = new Estudiante(nombre, edad, email);
@@ -68,6 +77,7 @@ document.addEventListener('DOMContentLoaded', ()=> {
             this.nombre = nombre;
             this.edad = edad;
             this.email = email;
+            this.uid = `${Date.now()}`;
         }
 
         static pintarPersonaUI(personas, tipo) {
@@ -131,8 +141,8 @@ document.addEventListener('DOMContentLoaded', ()=> {
             ? "Aprobado"
             : "Reprobado";
 
-            clone.querySelector('.btn-success').dataset.email = this.email;
-            clone.querySelector('.btn-danger').dataset.email = this.email;
+            clone.querySelector('.btn-success').dataset.uid = this.uid;
+            clone.querySelector('.btn-danger').dataset.uid = this.uid;
 
             return clone;
         }
